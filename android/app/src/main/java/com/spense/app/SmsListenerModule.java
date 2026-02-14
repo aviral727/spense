@@ -1,4 +1,4 @@
-package com.priva.expense;
+package com.spense.app;
 
 import android.content.IntentFilter;
 import android.util.Log;

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Priva",
-    "slug": "priva",
+    "name": "Spense",
+    "slug": "spense",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.priva.expense"
+      "bundleIdentifier": "com.spense.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +27,7 @@
         "READ_SMS",
         "RECEIVE_SMS"
       ],
-      "package": "com.priva.expense"
+      "package": "com.spense.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

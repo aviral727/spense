@@ -18,7 +18,7 @@ export async function requestSMSPermission(): Promise<boolean> {
             PermissionsAndroid.PERMISSIONS.READ_SMS,
             {
                 title: 'SMS Permission',
-                message: 'Money Tracker needs access to your SMS messages to automatically detect bank transactions.',
+                message: 'Spense needs access to your SMS messages to automatically detect bank transactions.',
                 buttonNeutral: 'Ask Me Later',
                 buttonNegative: 'Cancel',
                 buttonPositive: 'OK',

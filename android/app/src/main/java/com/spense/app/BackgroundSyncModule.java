@@ -1,4 +1,4 @@
-package com.priva.expense;
+package com.spense.app;
 
 import android.content.Intent;
 import android.os.Build;

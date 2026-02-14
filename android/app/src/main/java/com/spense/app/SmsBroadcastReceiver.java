@@ -1,4 +1,4 @@
-package com.priva.expense;
+package com.spense.app;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

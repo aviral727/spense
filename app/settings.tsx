@@ -422,7 +422,7 @@ export default function Settings() {
                     </View>
 
                     <Text className="text-center text-gray-400 dark:text-gray-600 mt-12 text-sm">
-                        Money Tracker v1.0.0
+                        Spense v1.0.0
                     </Text>
                 </ScrollView>
             </View >

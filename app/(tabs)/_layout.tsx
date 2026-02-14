@@ -1,66 +1,131 @@
 import { Tabs } from "expo-router";
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, TouchableOpacity, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
+import { useRef, useEffect } from "react";
 
-export default function TabsLayout() {
+interface TabItem {
+    name: string;
+    title: string;
+    label: string;
+    iconActive: string;
+    iconInactive: string;
+}
+
+const TABS: TabItem[] = [
+    { name: "index", title: "Home", label: "Overview", iconActive: "🏠", iconInactive: "🏚️" },
+    { name: "transactions", title: "Transactions", label: "Transactions", iconActive: "📝", iconInactive: "📄" },
+    { name: "analysis", title: "Analysis", label: "Analysis", iconActive: "📊", iconInactive: "📈" },
+];
+
+function CustomTabBar({ state, descriptors, navigation }: any) {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
     return (
-        <Tabs
-            screenOptions={{
-                headerShown: false,
-                tabBarStyle: {
-                    backgroundColor: isDark ? '#0c0a09' : '#ffffff',
-                    borderTopColor: isDark ? '#1c1917' : '#e5e7eb',
-                    height: Platform.OS === 'ios' ? 88 : 80,
-                    paddingBottom: Platform.OS === 'ios' ? 28 : 22,
-                    paddingTop: 12,
-                },
-                tabBarActiveTintColor: '#059669',
-                tabBarInactiveTintColor: isDark ? '#6b7280' : '#9ca3af',
+        <View
+            style={{
+                flexDirection: 'row',
+                backgroundColor: isDark ? '#0c0a09' : '#ffffff',
+                borderTopColor: isDark ? '#1c1917' : '#f3f4f6',
+                borderTopWidth: 1,
+                paddingBottom: Platform.OS === 'ios' ? 28 : 16,
+                paddingTop: 10,
+                paddingHorizontal: 12,
             }}
         >
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: "Home",
-                    tabBarIcon: ({ color, focused }) => (
-                        <View className="items-center justify-center">
-                            <Text style={{ color, fontSize: 24 }}>
-                                {focused ? "🏠" : "🏚️"}
-                            </Text>
-                        </View>
-                    ),
-                    tabBarLabel: "Overview",
-                }}
-            />
-            <Tabs.Screen
-                name="transactions"
-                options={{
-                    title: "Transactions",
-                    tabBarIcon: ({ color, focused }) => (
-                        <View className="items-center justify-center">
-                            <Text style={{ color, fontSize: 24 }}>
-                                {focused ? "📝" : "📄"}
-                            </Text>
-                        </View>
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="analysis"
-                options={{
-                    title: "Analysis",
-                    tabBarIcon: ({ color, focused }) => (
-                        <View className="items-center justify-center">
-                            <Text style={{ color, fontSize: 24 }}>
-                                {focused ? "📊" : "📈"}
-                            </Text>
-                        </View>
-                    ),
-                }}
-            />
+            {state.routes.map((route: any, index: number) => {
+                const { options } = descriptors[route.key];
+                const isFocused = state.index === index;
+                const tab = TABS[index];
+
+                const onPress = () => {
+                    const event = navigation.emit({
+                        type: 'tabPress',
+                        target: route.key,
+                        canPreventDefault: true,
+                    });
+                    if (!isFocused && !event.defaultPrevented) {
+                        navigation.navigate(route.name);
+                    }
+                };
+
+                return (
+                    <TouchableOpacity
+                        key={route.key}
+                        accessibilityRole="button"
+                        accessibilityState={isFocused ? { selected: true } : {}}
+                        onPress={onPress}
+                        activeOpacity={0.7}
+                        style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        {isFocused ? (
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    backgroundColor: isDark ? '#064e3b' : '#ecfdf5',
+                                    paddingHorizontal: 16,
+                                    paddingVertical: 10,
+                                    borderRadius: 20,
+                                    gap: 6,
+                                    // Floating card effect
+                                    elevation: 4,
+                                    shadowColor: '#059669',
+                                    shadowOffset: { width: 0, height: 2 },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                }}
+                            >
+                                <Text style={{ fontSize: 20 }}>{tab.iconActive}</Text>
+                                <Text
+                                    style={{
+                                        color: isDark ? '#34d399' : '#059669',
+                                        fontWeight: '700',
+                                        fontSize: 13,
+                                    }}
+                                >
+                                    {tab.label}
+                                </Text>
+                            </View>
+                        ) : (
+                            <View style={{ alignItems: 'center', paddingVertical: 6 }}>
+                                <Text style={{ fontSize: 22, opacity: 0.5 }}>{tab.iconInactive}</Text>
+                                <Text
+                                    style={{
+                                        color: isDark ? '#6b7280' : '#9ca3af',
+                                        fontSize: 11,
+                                        marginTop: 2,
+                                        fontWeight: '500',
+                                    }}
+                                >
+                                    {tab.label}
+                                </Text>
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                );
+            })}
+        </View>
+    );
+}
+
+export default function TabsLayout() {
+    const { theme } = useTheme();
+
+    return (
+        <Tabs
+            tabBar={(props) => <CustomTabBar {...props} />}
+            screenOptions={{
+                headerShown: false,
+            }}
+        >
+            <Tabs.Screen name="index" options={{ title: "Home" }} />
+            <Tabs.Screen name="transactions" options={{ title: "Transactions" }} />
+            <Tabs.Screen name="analysis" options={{ title: "Analysis" }} />
         </Tabs>
     );
 }

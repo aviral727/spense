@@ -1,4 +1,4 @@
-package com.priva.expense;
+package com.spense.app;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

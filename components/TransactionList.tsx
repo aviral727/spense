@@ -85,15 +85,17 @@ export default function TransactionList({ limit = 0, onRefresh }: Props) {
         }
     };
 
+    // Short press → navigate directly to edit screen
     const handleTransactionPress = (item: any) => {
+        router.push({ pathname: '/edit-transaction', params: { id: item.id } });
+    };
+
+    // Long press → quick actions (Ignore / Delete)
+    const handleTransactionLongPress = (item: any) => {
         Alert.alert(
             item.description || item.category,
-            `${item.type === 'expense' ? '-' : '+'}${currency}${item.amount.toLocaleString('en-IN')}\n\n${item.rawMessage || 'No raw message'}`,
+            `${item.type === 'expense' ? '-' : '+'}${currency}${item.amount.toLocaleString('en-IN')}`,
             [
-                {
-                    text: 'Edit',
-                    onPress: () => router.push({ pathname: '/edit-transaction', params: { id: item.id } }),
-                },
                 {
                     text: item.isIgnored ? 'Unignore' : 'Ignore',
                     onPress: () => handleIgnoreToggle(item),
@@ -181,13 +183,15 @@ export default function TransactionList({ limit = 0, onRefresh }: Props) {
                     </View>
                 }
                 renderSectionHeader={({ section: { title } }) => (
-                    <Text className="text-gray-500 prop dark:text-gray-400 font-semibold mb-2 mt-2 uppercase text-xs tracking-wider pl-1">
+                    <Text className="text-gray-500 dark:text-gray-400 font-semibold mb-2 mt-2 uppercase text-xs tracking-wider pl-1">
                         {title}
                     </Text>
                 )}
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         onPress={() => handleTransactionPress(item)}
+                        onLongPress={() => handleTransactionLongPress(item)}
+                        delayLongPress={400}
                         activeOpacity={0.7}
                         className={`p-4 bg-white dark:bg-gray-900 mb-2 shadow-sm border border-gray-50 dark:border-gray-800 flex-row items-center justify-between ${item.isIgnored ? 'opacity-50' : ''}`}
                         style={{ borderRadius: 24 }}
@@ -207,7 +211,7 @@ export default function TransactionList({ limit = 0, onRefresh }: Props) {
                             <Text className={`font-bold text-base ${item.type === 'expense' ? 'text-gray-900 dark:text-white' : 'text-emerald-600 dark:text-emerald-400'} ${item.isIgnored ? 'line-through text-gray-400' : ''}`}>
                                 {item.type === 'expense' ? '-' : '+'}{currency}{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </Text>
-                            <Text className="text-gray-400 text-xs mt-0.5">Tap to edit</Text>
+                            <Text className="text-emerald-500 text-xs mt-0.5">✏️ Edit</Text>
                         </View>
                     </TouchableOpacity>
                 )}

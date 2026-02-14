@@ -33,8 +33,20 @@ export async function setupNotifications() {
             return;
         }
 
-        // Register Action Categories
+        // Register Action Categories with Name, Ignore, Delete
         await Notifications.setNotificationCategoryAsync('new_transaction', [
+            {
+                identifier: 'NAME_ACTION',
+                buttonTitle: '✏️ Name',
+                options: {
+                    isDestructive: false,
+                    isAuthenticationRequired: false,
+                },
+                textInput: {
+                    submitButtonTitle: 'Save',
+                    placeholder: 'Enter custom name...',
+                },
+            },
             {
                 identifier: 'IGNORE_ACTION',
                 buttonTitle: '🙈 Ignore',
@@ -70,8 +82,6 @@ export async function checkBudgetAlerts(lastTransactionAmount?: number, lastTran
 
         // === BALANCE UPDATE (Post-Transaction) ===
         if (lastTransactionAmount && lastTransactionAmount > 0) {
-            const safeToSpend = Math.max(0, status.dailyLimit);
-
             await Notifications.scheduleNotificationAsync({
                 content: {
                     title: '💸 Transaction Recorded',
@@ -79,7 +89,7 @@ export async function checkBudgetAlerts(lastTransactionAmount?: number, lastTran
                     sound: true,
                     data: { transactionId: lastTransactionId },
                     categoryIdentifier: 'new_transaction',
-                    badge: 1, // Optional visual cue
+                    badge: 1,
                 },
                 trigger: null,
             });

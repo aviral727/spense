@@ -1,4 +1,4 @@
-package com.priva.expense;
+package com.spense.app;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -79,7 +79,7 @@ public class SmsBackgroundService extends Service {
                 "Transaction Sync",
                 NotificationManager.IMPORTANCE_LOW
             );
-            channel.setDescription("Keeps Priva syncing transactions in the background");
+            channel.setDescription("Keeps Spense syncing transactions in the background");
             channel.setShowBadge(false);
             
             NotificationManager manager = getSystemService(NotificationManager.class);
@@ -90,7 +90,10 @@ public class SmsBackgroundService extends Service {
     }
     
     private Notification createNotification() {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (notificationIntent == null) {
+            notificationIntent = new Intent();
+        }
         PendingIntent pendingIntent = PendingIntent.getActivity(
             this, 
             0, 
@@ -99,7 +102,7 @@ public class SmsBackgroundService extends Service {
         );
         
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Priva")
+            .setContentTitle("Spense")
             .setContentText("Auto-sync active")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentIntent(pendingIntent)

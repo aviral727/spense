@@ -27,6 +27,13 @@ export default function Home() {
         }, [])
     );
 
+    // Auto-refresh budget every 5 seconds for real-time updates
+    useEffect(() => {
+        loadBudgetStats(true);
+        const interval = setInterval(() => loadBudgetStats(false), 5000);
+        return () => clearInterval(interval);
+    }, []);
+
     const loadBudgetStats = async (showLoading = true) => {
         if (showLoading && !budgetStatus) setLoading(true);
         try {
@@ -68,7 +75,7 @@ export default function Home() {
                 <View className="mb-6 mt-2 flex-row justify-between items-center">
                     <View>
                         <Text className="text-gray-500 dark:text-gray-400 text-base font-medium">Welcome Back 👋</Text>
-                        <Text className="text-2xl font-bold text-gray-900 dark:text-white">Priva</Text>
+                        <Text className="text-2xl font-bold text-gray-900 dark:text-white">Spense</Text>
                     </View>
                     <TouchableOpacity
                         onPress={() => router.push('/settings')}
@@ -131,8 +138,8 @@ export default function Home() {
                     </TouchableOpacity>
                 </View>
 
-                {/* Transactions List */}
-                <TransactionList limit={5} />
+                {/* Transactions List — onRefresh triggers immediate budget recalc */}
+                <TransactionList limit={5} onRefresh={() => loadBudgetStats(false)} />
 
                 {/* Floating Add Button */}
                 <TouchableOpacity

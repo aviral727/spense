@@ -1,12 +1,14 @@
-# Priva - Private Expense Tracker
+# Spense - Smart Expense Tracker
 
-**Priva** is a privacy-focused expense tracking app that automatically reads bank SMS messages to track your spending. All data is processed locally on your device - nothing is uploaded to any server.
+**Spense** is a privacy-focused expense tracking app that automatically reads bank SMS messages to track your spending. All data is processed locally on your device - nothing is uploaded to any server.
 
 ## 📱 Features
 
 - **Automatic SMS Parsing**: Reads bank SMS messages and extracts transaction details
 - **Smart Categorization**: AI-powered transaction categorization
 - **Budget Tracking**: Set monthly budgets with dynamic or fixed daily limits
+- **Edit & Ignore**: Tap any transaction to edit it, long-press for quick actions
+- **Notification Actions**: Name, Ignore, or Delete transactions directly from notifications
 - **Privacy First**: 100% on-device processing, no data leaves your phone
 - **Dark Mode**: Full dark mode support
 - **Multi-currency**: Support for ₹, $, €, £, ¥
@@ -27,10 +29,10 @@
 ### Project Structure
 
 ```
-priva/
+spense/
 ├── app/                          # Expo Router pages
 │   ├── (tabs)/                   # Tab-based navigation
-│   │   ├── _layout.tsx           # Tab layout configuration
+│   │   ├── _layout.tsx           # Custom floating tab bar
 │   │   ├── index.tsx             # Home screen (budget overview)
 │   │   ├── transactions.tsx      # Full transaction list
 │   │   └── analysis.tsx          # Spending analysis
@@ -38,9 +40,9 @@ priva/
 │   ├── edit-transaction.tsx      # Edit existing transaction
 │   ├── onboarding.tsx            # First-time setup wizard
 │   ├── settings.tsx              # App settings
-│   └── _layout.tsx               # Root layout
+│   └── _layout.tsx               # Root layout + notification handler
 ├── components/                   # Reusable UI components
-│   └── TransactionList.tsx       # Transaction list with actions
+│   └── TransactionList.tsx       # Transaction list (tap=edit, long-press=actions)
 ├── context/                      # React Context providers
 │   ├── ThemeContext.tsx          # Light/dark theme management
 │   └── CurrencyContext.tsx       # Currency selection
@@ -51,13 +53,13 @@ priva/
 ├── services/                     # Business logic
 │   ├── autoSync.ts               # SMS auto-sync service
 │   ├── budgetService.ts          # Budget calculations
-│   ├── notificationService.ts    # Push notifications
+│   ├── notificationService.ts    # Notifications (Name/Ignore/Delete actions)
 │   └── smsReader.ts              # SMS reading logic
 ├── utils/                        # Utilities
 │   ├── smsParser.ts              # Bank SMS parsing patterns
 │   └── transactionProcessor.ts   # Transaction intelligence
 ├── android/                      # Native Android code
-│   └── app/src/main/java/com/priva/expense/
+│   └── app/src/main/java/com/spense/app/
 │       ├── SmsListenerModule.java      # RN bridge for SMS
 │       ├── SmsBroadcastReceiver.java   # Background SMS listener
 │       ├── SmsBackgroundService.java   # Foreground service
@@ -73,16 +75,15 @@ priva/
 CREATE TABLE transactions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   amount REAL NOT NULL,
-  category TEXT,
+  category TEXT NOT NULL,
   description TEXT,
-  date TEXT NOT NULL,
+  date INTEGER NOT NULL,
   type TEXT NOT NULL,           -- 'expense' | 'income'
-  source TEXT,                  -- 'manual' | 'sms'
-  transactionClass TEXT,        -- 'essential' | 'discretionary' | 'savings'
-  rawSmsHash TEXT,              -- Hash of raw SMS for deduplication
-  account TEXT,
-  isIgnored INTEGER DEFAULT 0,
-  createdAt TEXT
+  source TEXT DEFAULT 'manual', -- 'manual' | 'sms'
+  transaction_class TEXT,       -- 'spending' | 'income' | 'transfer' | 'refund'
+  raw_sms_hash TEXT,            -- Hash for SMS deduplication
+  account TEXT,                 -- Last 4 digits of account/card
+  is_ignored INTEGER DEFAULT 0  -- User manually excluded from budget
 );
 ```
 
@@ -91,87 +92,38 @@ CREATE TABLE transactions (
 CREATE TABLE categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
-  icon TEXT,
-  color TEXT
+  icon TEXT
 );
 ```
 
-### Budget Settings
-Stored in AsyncStorage:
-- `monthlyBudget`: Monthly spending limit
-- `budgetResetDay`: Day of month budget resets (1-28)
-- `budgetMode`: 'dynamic' or 'fixed'
+### Budget Settings (AsyncStorage)
+- `monthlyBudget` — Monthly spending limit
+- `budgetResetDay` — Day of month budget resets (1-28)
+- `budgetMode` — `'dynamic'` or `'fixed'`
 
 ## 📱 SMS Parsing
 
-The app parses bank SMS messages using pattern matching. Supported patterns include:
-
-| Bank | Pattern Examples |
-|------|------------------|
-| HDFC | `Rs.XXX debited from a/c` |
-| ICICI | `INR XXX debited from Ac` |
-| SBI | `Rs.XXX deducted from A/c` |
-| Axis | `Rs.XXX has been debited` |
-| UPI | `paid Rs.XXX to` |
-
-Adding new bank patterns:
-1. Edit `utils/smsParser.ts`
-2. Add regex patterns to `BANK_PATTERNS` array
-3. Include amount, merchant, and transaction type capture groups
+Supported bank patterns include HDFC, ICICI, SBI, Axis, UPI, and more. To add new patterns, edit `utils/smsParser.ts` and add regex entries to `BANK_PATTERNS`.
 
 ## 🔧 Development Setup
 
 ### Prerequisites
-- Node.js 18+
-- Java JDK 17+
-- Android Studio with SDK 34+
-- Expo CLI (`npm install -g expo-cli`)
+- Node.js 18+ · Java JDK 17+ · Android Studio (SDK 34+)
 
 ### Installation
-
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/priva.git
-cd priva
-
-# Install dependencies
+git clone https://github.com/yourusername/spense.git
+cd spense
 npm install
-
-# Start development server
-npx expo start
-
-# Run on Android device
-npx expo run:android
+npx expo start           # Dev server
+npx expo run:android     # Run on device
 ```
 
 ### Building Release APK
-
 ```bash
-# Export JS bundle
 npx expo export -p android -c
-
-# Build APK
-cd android
-./gradlew assembleRelease --no-daemon
-
-# APK location
-# android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
-```
-
-### Signing Configuration
-
-For production releases, create a keystore:
-
-```bash
-keytool -genkey -v -keystore keystore.jks -alias priva -keyalg RSA -keysize 2048 -validity 10000
-```
-
-Then add to `android/gradle.properties`:
-```properties
-MYAPP_UPLOAD_STORE_FILE=keystore.jks
-MYAPP_UPLOAD_KEY_ALIAS=priva
-MYAPP_UPLOAD_STORE_PASSWORD=your_password
-MYAPP_UPLOAD_KEY_PASSWORD=your_password
+cd android && ./gradlew assembleRelease --no-daemon
+# Output: android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
 ```
 
 ## 🔐 Permissions
@@ -181,17 +133,16 @@ MYAPP_UPLOAD_KEY_PASSWORD=your_password
 | `READ_SMS` | Read bank transaction messages |
 | `RECEIVE_SMS` | Real-time SMS notifications |
 | `FOREGROUND_SERVICE` | Background sync service |
-| `INTERNET` | (Future) Cloud backup |
 
-## 🎨 Theming
+## 🎨 Material You Icon
 
-Themes are managed via `ThemeContext.tsx`:
+To make the app icon compatible with Material You themed icons:
 
-```typescript
-const { theme, toggleTheme, autoTheme, setAutoTheme } = useTheme();
-```
+1. Create a **monochrome** (white on transparent) version of your icon
+2. Add `<monochrome>` element to `android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml`
+3. In `app.json`, add `monochromeImage` under `android.adaptiveIcon`
 
-Colors follow system preference when `autoTheme` is enabled.
+Tools: [Android Asset Studio](https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html) or Android Studio → File → New → Image Asset
 
 ## 📊 Budget Modes
 
@@ -202,33 +153,10 @@ Colors follow system preference when `autoTheme` is enabled.
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Fork → 2. Feature branch → 3. Commit → 4. Push → 5. PR
 
 ### Code Style
-
-- Use TypeScript for all JS/TS files
-- Follow React Native best practices
-- Use NativeWind classes for styling
-- Keep components small and focused
-
-### Adding New Features
-
-1. **New Screen**: Create in `app/` directory
-2. **New Component**: Add to `components/`
-3. **New Service**: Add to `services/`
-4. **Database Changes**: Update `db/schema.ts` and run migration
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 📞 Support
-
-For issues or feature requests, please open a GitHub issue.
+- TypeScript for all JS/TS · NativeWind for styling · Small focused components
 
 ---
 

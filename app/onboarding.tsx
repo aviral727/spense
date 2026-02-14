@@ -169,7 +169,7 @@ export default function OnboardingScreen() {
         <View className="flex-1 justify-center px-6">
             <View className="mb-8 items-center">
                 <Text className="text-4xl font-bold text-gray-900 dark:text-white mb-2 text-center">
-                    Welcome to{'\n'}Money Tracker! 👋
+                    Welcome to{'\n'}Spense! 👋
                 </Text>
                 <Text className="text-gray-600 dark:text-gray-400 text-center text-lg px-4 mt-2">
                     Your journey to financial discipline starts here. Let's set up your secure expense manager.

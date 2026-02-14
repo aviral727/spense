@@ -21,23 +21,42 @@ export default function RootLayout() {
         const subscription = Notifications.addNotificationResponseReceivedListener(async response => {
             const actionId = response.actionIdentifier;
             const data = response.notification.request.content.data;
+            const userText = (response as any).userText; // Text from NAME_ACTION input
 
-            if (actionId === 'IGNORE_ACTION' && data?.transactionId) {
+            if (actionId === 'NAME_ACTION' && data?.transactionId && userText) {
                 try {
-                    // Update DB to ignore
+                    // Update description with custom name
+                    await expoDb.execAsync(`
+                        UPDATE transactions 
+                        SET description = '${userText.replace(/'/g, "''")}' 
+                        WHERE id = ${data.transactionId}
+                    `);
+
+                    await Notifications.scheduleNotificationAsync({
+                        content: {
+                            title: '✏️ Transaction Named',
+                            body: `Labeled as: ${userText}`,
+                            sound: false,
+                        },
+                        trigger: null,
+                    });
+                } catch (e) {
+                    console.error('Error handling name action:', e);
+                }
+            } else if (actionId === 'IGNORE_ACTION' && data?.transactionId) {
+                try {
                     await expoDb.execAsync(`
                         UPDATE transactions 
                         SET is_ignored = 1 
                         WHERE id = ${data.transactionId}
                     `);
 
-                    // Recalculate and notify
                     const { calculateDailyBudget } = require('../services/budgetService');
                     const status = await calculateDailyBudget();
 
                     await Notifications.scheduleNotificationAsync({
                         content: {
-                            title: 'Transaction Ignored',
+                            title: '🙈 Transaction Ignored',
                             body: `Budget updated. Safe to spend: ${Math.round(status.dailyLimit)}`,
                             sound: false,
                         },
@@ -48,19 +67,17 @@ export default function RootLayout() {
                 }
             } else if (actionId === 'DELETE_ACTION' && data?.transactionId) {
                 try {
-                    // Delete from DB
                     await expoDb.execAsync(`
                         DELETE FROM transactions 
                         WHERE id = ${data.transactionId}
                     `);
 
-                    // Recalculate and notify
                     const { calculateDailyBudget } = require('../services/budgetService');
                     const status = await calculateDailyBudget();
 
                     await Notifications.scheduleNotificationAsync({
                         content: {
-                            title: 'Transaction Deleted',
+                            title: '🗑️ Transaction Deleted',
                             body: `Removed from records. Safe to spend: ${Math.round(status.dailyLimit)}`,
                             sound: false,
                         },
@@ -191,6 +208,7 @@ export default function RootLayout() {
                             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                             <Stack.Screen name="auto-import" options={{ title: "Auto Import", headerShown: false }} />
                             <Stack.Screen name="add" options={{ title: "Add Transaction", headerShown: false }} />
+                            <Stack.Screen name="edit-transaction" options={{ title: "Edit Transaction", headerShown: false }} />
                             <Stack.Screen name="settings" options={{ title: "Settings", headerShown: false }} />
                         </>
                     )}
