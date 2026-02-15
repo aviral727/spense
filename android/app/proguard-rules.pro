@@ -11,8 +11,8 @@
 -keep class com.swmansion.reanimated.** { *; }
 -keep class com.facebook.react.turbomodule.** { *; }
 
-# Keep our custom native modules and receivers
--keep class com.anonymous.MoneyTracker.** { *; }
+# Keep our custom native modules, receivers, and app classes
+-keep class com.spense.app.** { *; }
 
 # Keep React Native bridge classes (just in case)
 -keep class com.facebook.react.bridge.** { *; }
