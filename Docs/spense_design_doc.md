@@ -1027,14 +1027,25 @@ npx expo run:android
 > [!CAUTION]
 > You **MUST** use `npx expo run:android` (not Expo Go) because the app has custom native Java modules. Expo Go will crash because `SmsListenerModule` and `BackgroundSyncModule` are not available.
 
-### Building Release APK
+### Building Release Builds (APK & AAB)
+
+**Important Note on CPU Architectures:** The app is configured with `enableSeparateBuildPerCPUArchitecture = false` in `android/app/build.gradle`. This ensures a single Universal APK is created and allows the successful generation of an Android App Bundle (AAB) for the Google Play Store.
+
+**Production Signing:**
+The release build is signed using a production keystore (`upload.keystore`) configured via variables in `android/gradle.properties`:
+- `MYAPP_UPLOAD_STORE_FILE=upload.keystore`
+- `MYAPP_UPLOAD_KEY_ALIAS=upload`
+- `MYAPP_UPLOAD_STORE_PASSWORD` / `MYAPP_UPLOAD_KEY_PASSWORD`
 
 ```bash
-npx expo export -p android -c
-cd android && ./gradlew assembleRelease --no-daemon
-# Output: android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
-```
+# Build Universal APK (for direct testing/distribution)
+cd android && ./gradlew assembleRelease
+# Output: android/app/build/outputs/apk/release/app-release.apk
 
+# Build Signed Android App Bundle (for Google Play Store upload)
+cd android && ./gradlew bundleRelease
+# Output: android/app/build/outputs/bundle/release/app-release.aab
+```
 ### Database Migrations
 
 ```bash
