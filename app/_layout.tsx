@@ -1,11 +1,10 @@
 import "../global.css";
 import { ThemeProvider } from "../context/ThemeContext";
 import { CurrencyProvider } from "../context/CurrencyContext";
-import { Stack, useRouter, useSegments } from "expo-router";
-import { View, Text, ActivityIndicator, Platform } from "react-native";
+import { Stack, useRouter } from "expo-router";
+import { View, Text, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
 import { expoDb } from '../db/client';
-import { initializeSmsListener } from '../services/autoSync';
 import { setupNotifications } from '../services/notificationService';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,75 +16,46 @@ export default function RootLayout() {
     const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
 
     useEffect(() => {
-        // Handle notification actions
+        // Handle notification actions (Name / Ignore / Delete from transaction notifications)
         const subscription = Notifications.addNotificationResponseReceivedListener(async response => {
             const actionId = response.actionIdentifier;
             const data = response.notification.request.content.data;
-            const userText = (response as any).userText; // Text from NAME_ACTION input
+            const userText = (response as any).userText;
 
             if (actionId === 'NAME_ACTION' && data?.transactionId && userText) {
                 try {
-                    // Update description with custom name
                     await expoDb.execAsync(`
                         UPDATE transactions 
                         SET description = '${userText.replace(/'/g, "''")}' 
                         WHERE id = ${data.transactionId}
                     `);
-
                     await Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: '✏️ Transaction Named',
-                            body: `Labeled as: ${userText}`,
-                            sound: false,
-                        },
+                        content: { title: '✏️ Transaction Named', body: `Labeled as: ${userText}`, sound: false },
                         trigger: null,
                     });
-                } catch (e) {
-                    console.error('Error handling name action:', e);
-                }
+                } catch (e) { console.error('Error handling name action:', e); }
+
             } else if (actionId === 'IGNORE_ACTION' && data?.transactionId) {
                 try {
-                    await expoDb.execAsync(`
-                        UPDATE transactions 
-                        SET is_ignored = 1 
-                        WHERE id = ${data.transactionId}
-                    `);
-
+                    await expoDb.execAsync(`UPDATE transactions SET is_ignored = 1 WHERE id = ${data.transactionId}`);
                     const { calculateDailyBudget } = require('../services/budgetService');
                     const status = await calculateDailyBudget();
-
                     await Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: '🙈 Transaction Ignored',
-                            body: `Budget updated. Safe to spend: ${Math.round(status.dailyLimit)}`,
-                            sound: false,
-                        },
+                        content: { title: '🙈 Transaction Ignored', body: `Budget updated. Safe to spend: ${Math.round(status.dailyLimit)}`, sound: false },
                         trigger: null,
                     });
-                } catch (e) {
-                    console.error('Error handling ignore action:', e);
-                }
+                } catch (e) { console.error('Error handling ignore action:', e); }
+
             } else if (actionId === 'DELETE_ACTION' && data?.transactionId) {
                 try {
-                    await expoDb.execAsync(`
-                        DELETE FROM transactions 
-                        WHERE id = ${data.transactionId}
-                    `);
-
+                    await expoDb.execAsync(`DELETE FROM transactions WHERE id = ${data.transactionId}`);
                     const { calculateDailyBudget } = require('../services/budgetService');
                     const status = await calculateDailyBudget();
-
                     await Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: '🗑️ Transaction Deleted',
-                            body: `Removed from records. Safe to spend: ${Math.round(status.dailyLimit)}`,
-                            sound: false,
-                        },
+                        content: { title: '🗑️ Transaction Deleted', body: `Removed. Safe to spend: ${Math.round(status.dailyLimit)}`, sound: false },
                         trigger: null,
                     });
-                } catch (e) {
-                    console.error('Error handling delete action:', e);
-                }
+                } catch (e) { console.error('Error handling delete action:', e); }
             }
         });
 
@@ -93,7 +63,6 @@ export default function RootLayout() {
     }, []);
 
     useEffect(() => {
-        // Initialize database tables
         try {
             expoDb.execSync(`
                 CREATE TABLE IF NOT EXISTS transactions (
@@ -113,43 +82,18 @@ export default function RootLayout() {
                     icon TEXT
                 );
             `);
-            console.log("Database initialized");
-
-            // Migration check for existing databases that might lack 'source'
-            try {
-                expoDb.execSync("ALTER TABLE transactions ADD COLUMN source TEXT DEFAULT 'manual'");
-                console.log("Migration: Added source column to transactions");
-            } catch (e) {
-                // Column likely exists
+            // Migrations for columns added post-v1.0
+            const migrations = [
+                "ALTER TABLE transactions ADD COLUMN source TEXT DEFAULT 'manual'",
+                "ALTER TABLE transactions ADD COLUMN transaction_class TEXT DEFAULT 'spending'",
+                "ALTER TABLE transactions ADD COLUMN linked_transaction_id INTEGER",
+                "ALTER TABLE transactions ADD COLUMN raw_sms_hash TEXT",
+                "ALTER TABLE transactions ADD COLUMN account TEXT",
+                "ALTER TABLE transactions ADD COLUMN is_ignored INTEGER DEFAULT 0",
+            ];
+            for (const sql of migrations) {
+                try { expoDb.execSync(sql); } catch (_) { /* column exists */ }
             }
-
-            // Migration for Transaction Intelligence fields
-            try {
-                expoDb.execSync("ALTER TABLE transactions ADD COLUMN transaction_class TEXT DEFAULT 'spending'");
-                console.log("Migration: Added transaction_class column");
-            } catch (e) { /* Column exists */ }
-
-            try {
-                expoDb.execSync("ALTER TABLE transactions ADD COLUMN linked_transaction_id INTEGER");
-                console.log("Migration: Added linked_transaction_id column");
-            } catch (e) { /* Column exists */ }
-
-            try {
-                expoDb.execSync("ALTER TABLE transactions ADD COLUMN raw_sms_hash TEXT");
-                console.log("Migration: Added raw_sms_hash column");
-            } catch (e) { /* Column exists */ }
-
-            try {
-                expoDb.execSync("ALTER TABLE transactions ADD COLUMN account TEXT");
-                console.log("Migration: Added account column");
-            } catch (e) { /* Column exists */ }
-
-            try {
-                expoDb.execSync("ALTER TABLE transactions ADD COLUMN is_ignored INTEGER DEFAULT 0");
-                console.log("Migration: Added is_ignored column");
-            } catch (e) { /* Column exists */ }
-
-            // Initialize Settings table
             expoDb.execSync(`
                 CREATE TABLE IF NOT EXISTS settings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -157,17 +101,10 @@ export default function RootLayout() {
                     value TEXT NOT NULL
                 );
             `);
-        } catch (e) {
-            console.error("Database initialization error:", e);
-        }
+        } catch (e) { console.error("Database initialization error:", e); }
 
-        // Setup Notifications
         setupNotifications();
-
-        // Check if onboarding is complete and initialize SMS listener if so
         checkOnboarding();
-
-        // Set ready
         setIsReady(true);
     }, []);
 
@@ -175,13 +112,6 @@ export default function RootLayout() {
         try {
             const completed = await AsyncStorage.getItem(ONBOARDING_KEY);
             setOnboardingComplete(completed === 'true');
-
-            // Only initialize SMS listener if onboarding is already complete
-            if (completed === 'true' && Platform.OS === 'android') {
-                initializeSmsListener().catch(err => {
-                    console.log('SMS listener initialization:', err);
-                });
-            }
         } catch (error) {
             console.error('Error checking onboarding:', error);
             setOnboardingComplete(false);
@@ -190,9 +120,9 @@ export default function RootLayout() {
 
     if (!isReady || onboardingComplete === null) {
         return (
-            <View className="flex-1 items-center justify-center bg-white">
+            <View className="flex-1 items-center justify-center bg-slate-950">
                 <ActivityIndicator size="large" color="#059669" />
-                <Text className="text-gray-600 mt-4">Setting up database...</Text>
+                <Text className="text-slate-400 mt-4">Setting up Spense...</Text>
             </View>
         );
     }
@@ -206,10 +136,9 @@ export default function RootLayout() {
                     ) : (
                         <>
                             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                            <Stack.Screen name="auto-import" options={{ title: "Auto Import", headerShown: false }} />
-                            <Stack.Screen name="add" options={{ title: "Add Transaction", headerShown: false }} />
-                            <Stack.Screen name="edit-transaction" options={{ title: "Edit Transaction", headerShown: false }} />
-                            <Stack.Screen name="settings" options={{ title: "Settings", headerShown: false }} />
+                            <Stack.Screen name="add" options={{ headerShown: false }} />
+                            <Stack.Screen name="edit-transaction" options={{ headerShown: false }} />
+                            <Stack.Screen name="settings" options={{ headerShown: false }} />
                         </>
                     )}
                 </Stack>

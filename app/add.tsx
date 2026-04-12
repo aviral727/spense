@@ -78,35 +78,35 @@ export default function AddTransaction() {
     };
 
     return (
-        <View className="flex-1 bg-white dark:bg-black">
+        <View className="flex-1 bg-white dark:bg-slate-950">
             <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
             <LinearGradient
                 colors={
                     theme === 'dark'
-                        ? ['#0c0a09', '#0c0a09']
+                        ? ['#0f172a', '#0f172a']
                         : type === 'expense' ? ['#fff1f2', '#ffffff'] : ['#ecfdf5', '#ffffff']
                 }
                 className="flex-1"
             >
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    className="flex-1 dark:bg-black"
+                    className="flex-1 dark:bg-slate-950"
                 >
                     <ScrollView className="flex-1 px-6 pt-12">
                         {/* Header with Type Switcher */}
                         <View className="flex-row justify-between items-center mb-10">
                             <TouchableOpacity
                                 onPress={() => router.back()}
-                                className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full items-center justify-center"
+                                className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-full items-center justify-center"
                             >
                                 <Text className="text-xl dark:text-white">✕</Text>
                             </TouchableOpacity>
 
-                            <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-full p-1">
+                            <View className="flex-row bg-slate-100 dark:bg-slate-800 rounded-full p-1">
                                 <TouchableOpacity
                                     onPress={() => setType('expense')}
                                     className="px-6 py-2 rounded-full"
-                                    style={type === 'expense' ? { backgroundColor: theme === 'dark' ? '#374151' : 'white', shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 } : {}}
+                                    style={type === 'expense' ? { backgroundColor: theme === 'dark' ? '#1e293b' : 'white', shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 } : {}}
                                 >
                                     <Text className={`font-semibold ${type === 'expense' ? 'text-red-500' : 'text-gray-400'}`}>
                                         Expense
@@ -115,7 +115,7 @@ export default function AddTransaction() {
                                 <TouchableOpacity
                                     onPress={() => setType('income')}
                                     className="px-6 py-2 rounded-full"
-                                    style={type === 'income' ? { backgroundColor: theme === 'dark' ? '#374151' : 'white', shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 } : {}}
+                                    style={type === 'income' ? { backgroundColor: theme === 'dark' ? '#1e293b' : 'white', shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 } : {}}
                                 >
                                     <Text className={`font-semibold ${type === 'income' ? 'text-emerald-600' : 'text-gray-400'}`}>
                                         Income
@@ -151,10 +151,10 @@ export default function AddTransaction() {
                             {/* Category Selector */}
                             <TouchableOpacity
                                 onPress={() => setShowCategoryPicker(true)}
-                                className="flex-row items-center bg-white dark:bg-gray-900 p-5 border border-gray-200 dark:border-gray-800 shadow-sm"
+                                className="flex-row items-center bg-white dark:bg-slate-800 p-5 border border-slate-200 dark:border-slate-700 shadow-sm"
                                 style={{ borderRadius: 24, overflow: 'hidden' }}
                             >
-                                <View className={`w-12 h-12 rounded-full items-center justify-center mr-4 ${category ? 'bg-gray-100 dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800'}`}>
+                                <View className={`w-12 h-12 rounded-full items-center justify-center mr-4 ${category ? 'bg-slate-100 dark:bg-slate-700' : 'bg-slate-50 dark:bg-slate-700'}`}>
                                     <Text className="text-2xl">{categoryIcon}</Text>
                                 </View>
                                 <View className="flex-1">
@@ -168,10 +168,10 @@ export default function AddTransaction() {
 
                             {/* Description Input */}
                             <View
-                                className="bg-white dark:bg-gray-900 p-5 border border-gray-200 dark:border-gray-800 shadow-sm flex-row items-start"
+                                className="bg-white dark:bg-slate-800 p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex-row items-start"
                                 style={{ borderRadius: 24, overflow: 'hidden' }}
                             >
-                                <View className="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-800 items-center justify-center mr-4">
+                                <View className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-700 items-center justify-center mr-4">
                                     <Text className="text-2xl">📝</Text>
                                 </View>
                                 <View className="flex-1">
@@ -190,11 +190,11 @@ export default function AddTransaction() {
                             {/* Ignore Toggle */}
                             <TouchableOpacity
                                 onPress={() => setIsIgnored(!isIgnored)}
-                                className={`p-5 border shadow-sm flex-row items-center justify-between ${isIgnored ? 'bg-gray-50 border-gray-300 dark:bg-gray-800 dark:border-gray-700' : 'bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-800'}`}
+                                className={`p-5 border shadow-sm flex-row items-center justify-between ${isIgnored ? 'bg-slate-50 border-slate-300 dark:bg-slate-800 dark:border-slate-700' : 'bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700'}`}
                                 style={{ borderRadius: 24, overflow: 'hidden' }}
                             >
                                 <View className="flex-row items-center flex-1 mr-4">
-                                    <View className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mr-4">
+                                    <View className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 items-center justify-center mr-4">
                                         <Text className="text-2xl">🙈</Text>
                                     </View>
                                     <View className="flex-1">
@@ -212,13 +212,14 @@ export default function AddTransaction() {
                     </ScrollView>
 
                     {/* Footer Save Button */}
-                    <View className="p-6 bg-white dark:bg-black border-t border-gray-50 dark:border-gray-900">
+                    <View className="p-6 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
                         <TouchableOpacity
                             onPress={handleSave}
                             disabled={loading || !amount || !category}
-                            className={`w-full py-5 items-center shadow-lg ${loading || !amount || !category
-                                ? 'bg-gray-200 dark:bg-gray-800'
-                                : type === 'expense' ? 'bg-rose-600' : 'bg-emerald-600'
+                            className={`w-full py-5 items-center shadow-lg ${
+                                loading || !amount || !category
+                                    ? 'bg-slate-200 dark:bg-slate-800'
+                                    : type === 'expense' ? 'bg-rose-600' : 'bg-emerald-600'
                                 }`}
                             style={{ borderRadius: 24, overflow: 'hidden' }}
                         >

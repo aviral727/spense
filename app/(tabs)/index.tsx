@@ -70,18 +70,18 @@ export default function Home() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-stone-50 dark:bg-stone-950">
+        <SafeAreaView className="flex-1 bg-slate-50 dark:bg-slate-950">
             <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
             <View className="flex-1 px-6 pt-2">
                 {/* Header */}
                 <View className="mb-6 mt-2 flex-row justify-between items-center">
                     <View>
-                        <Text className="text-gray-500 dark:text-gray-400 text-base font-medium">Welcome Back 👋</Text>
-                        <Text className="text-2xl font-bold text-gray-900 dark:text-white">Spense</Text>
+                        <Text className="text-slate-500 dark:text-slate-400 text-base font-medium">Welcome Back 👋</Text>
+                        <Text className="text-2xl font-bold text-slate-900 dark:text-white">Spense</Text>
                     </View>
                     <TouchableOpacity
                         onPress={() => router.push('/settings')}
-                        className="bg-gray-200 dark:bg-gray-800 w-10 h-10 rounded-full items-center justify-center"
+                        className="bg-slate-200 dark:bg-slate-800 w-10 h-10 rounded-full items-center justify-center"
                     >
                         <Text className="text-lg">⚙️</Text>
                     </TouchableOpacity>
@@ -91,7 +91,7 @@ export default function Home() {
                 <View
                     style={{
                         borderRadius: 24,
-                        backgroundColor: theme === 'dark' ? '#064e3b' : 'white',
+                        backgroundColor: theme === 'dark' ? '#0f172a' : 'white',
                         elevation: 10,
                         shadowColor: theme === 'dark' ? '#000' : '#059669',
                         shadowOffset: { width: 0, height: 8 },

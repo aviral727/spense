@@ -1,13 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.READ_SMS"/>
-  <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
@@ -32,23 +26,6 @@
         <data android:scheme="spense"/>
       </intent-filter>
     </activity>
-    
-    <!-- SMS Broadcast Receiver for background listening -->
-    <receiver
-      android:name=".SmsBroadcastReceiver"
-      android:exported="true"
-      android:permission="android.permission.BROADCAST_SMS">
-      <intent-filter android:priority="999">
-        <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
-      </intent-filter>
-    </receiver>
-    
-    <!-- Background Service for real-time SMS sync -->
-    <service
-      android:name=".SmsBackgroundService"
-      android:enabled="true"
-      android:exported="false"
-      android:foregroundServiceType="dataSync"/>
 
     <!-- Home Screen Widget -->
     <receiver

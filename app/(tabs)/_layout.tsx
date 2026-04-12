@@ -25,8 +25,8 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
         <View
             style={{
                 flexDirection: 'row',
-                backgroundColor: isDark ? '#0c0a09' : '#ffffff',
-                borderTopColor: isDark ? '#1c1917' : '#f3f4f6',
+                backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                borderTopColor: isDark ? '#1e293b' : '#f1f5f9',
                 borderTopWidth: 1,
                 paddingBottom: Platform.OS === 'ios' ? 28 : 16,
                 paddingTop: 10,
@@ -96,7 +96,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                                 <Text style={{ fontSize: 22, opacity: 0.5 }}>{tab.iconInactive}</Text>
                                 <Text
                                     style={{
-                                        color: isDark ? '#6b7280' : '#9ca3af',
+                                        color: isDark ? '#6b7280' : '#94a3b8',
                                         fontSize: 11,
                                         marginTop: 2,
                                         fontWeight: '500',
