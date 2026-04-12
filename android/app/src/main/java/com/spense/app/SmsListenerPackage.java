@@ -19,6 +19,7 @@ public class SmsListenerPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new SmsListenerModule(reactContext));
         modules.add(new BackgroundSyncModule(reactContext));
+        modules.add(new WidgetDataModule(reactContext));
         return modules;
     }
 

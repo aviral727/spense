@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Spense Home Screen Widget Layout
+    ─────────────────────────────────────────
+    ┌──────────────────────────────────────┐
+    │  SPENSE                         [+]  │
+    │                                      │
+    │  Safe to Spend Today                 │
+    │  ₹1,240                              │
+    │                                      │
+    │  12 days left                        │
+    └──────────────────────────────────────┘
+
+    Uses only RemoteViews-compatible views:
+    LinearLayout, RelativeLayout, TextView, ImageButton, ImageView
+-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:padding="18dp"
+    android:clickable="true">
+
+    <!-- App Name Label (top-left) -->
+    <TextView
+        android:id="@+id/widget_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="SPENSE"
+        android:textColor="#6ee7b7"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.2" />
+
+    <!-- Add Button (top-right, circular emerald) -->
+    <ImageButton
+        android:id="@+id/widget_add_button"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-4dp"
+        android:background="@drawable/widget_button_bg"
+        android:src="@drawable/ic_widget_add"
+        android:scaleType="center"
+        android:contentDescription="Add expense"
+        android:padding="8dp" />
+
+    <!-- "Safe to Spend Today" label -->
+    <TextView
+        android:id="@+id/widget_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/widget_app_name"
+        android:layout_marginTop="16dp"
+        android:text="Safe to Spend Today"
+        android:textColor="#9ca3af"
+        android:textSize="11sp" />
+
+    <!-- Main Amount -->
+    <TextView
+        android:id="@+id/widget_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/widget_label"
+        android:layout_marginTop="4dp"
+        android:text="₹0"
+        android:textColor="#ffffff"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <!-- Days Left -->
+    <TextView
+        android:id="@+id/widget_days_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Set your budget in app"
+        android:textColor="#6b7280"
+        android:textSize="11sp" />
+
+</RelativeLayout>

@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../../context/ThemeContext';
 import { useCurrency } from '../../context/CurrencyContext';
-import { calculateDailyBudget } from '../../services/budgetService';
+import { calculateDailyBudget, syncWidgetData } from '../../services/budgetService';
 import { useFocusEffect } from 'expo-router';
 
 type DisplayMode = 'daily' | 'monthly';
@@ -39,6 +39,8 @@ export default function Home() {
         try {
             const status = await calculateDailyBudget();
             setBudgetStatus(status);
+            // Keep the home-screen widget in sync on every poll / focus
+            syncWidgetData(status, currency);
         } catch (error) {
             console.error('Error loading budget stats:', error);
         } finally {

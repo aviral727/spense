@@ -1,6 +1,40 @@
 import { db } from '../db/client';
 import { settings, transactions } from '../db/schema';
 import { eq, and, gte, lte } from 'drizzle-orm';
+import { NativeModules, Platform } from 'react-native';
+
+/**
+ * Pushes current budget data into native SharedPreferences so the
+ * Android home-screen widget can display live figures.
+ * Safe to call on iOS (no-ops silently).
+ *
+ * @param status   The full BudgetStatus returned by calculateDailyBudget()
+ * @param currency The currency symbol from CurrencyContext (e.g. "₹")
+ */
+export async function syncWidgetData(
+    status: {
+        dailyLimit: number;
+        remainingTotal: number;
+        daysLeft: number;
+        isOverBudget: boolean;
+    },
+    currency: string
+): Promise<void> {
+    if (Platform.OS !== 'android') return;
+    const { WidgetDataModule } = NativeModules;
+    if (!WidgetDataModule) return; // native build not present (e.g. Expo Go)
+    try {
+        await WidgetDataModule.updateWidgetData(
+            status.dailyLimit,
+            status.remainingTotal,
+            status.daysLeft,
+            currency,
+            status.isOverBudget
+        );
+    } catch (e) {
+        console.log('[syncWidgetData] Widget update skipped:', e);
+    }
+}
 
 interface BudgetSettings {
     monthlyLimit: number; // e.g., 30000
