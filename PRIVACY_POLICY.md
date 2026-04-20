@@ -1,9 +1,9 @@
-# Privacy Policy for Spense
+# Privacy Policy for SpenseTrack
 
 **Effective Date:** March 4, 2026  
 **Last Updated:** April 12, 2026
 
-Spense ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use the Spense mobile application (the "App").
+SpenseTrack ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use the SpenseTrack mobile application (the "App").
 
 ## 1. 100% On-Device Processing
 

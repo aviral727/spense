@@ -1,6 +1,6 @@
-# Spense - Smart Expense Tracker
+# SpenseTrack - Expense & Budget Tracker
 
-**Spense** is a privacy-focused expense tracking app that automatically reads bank SMS messages to track your spending. All data is processed locally on your device - nothing is uploaded to any server.
+**SpenseTrack** is a privacy-focused expense tracking app that automatically reads bank SMS messages to track your spending. All data is processed locally on your device - nothing is uploaded to any server.
 
 ## 📱 Features
 

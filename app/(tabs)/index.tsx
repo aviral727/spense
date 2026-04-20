@@ -77,7 +77,7 @@ export default function Home() {
                 <View className="mb-6 mt-2 flex-row justify-between items-center">
                     <View>
                         <Text className="text-slate-500 dark:text-slate-400 text-base font-medium">Welcome Back 👋</Text>
-                        <Text className="text-2xl font-bold text-slate-900 dark:text-white">Spense</Text>
+                        <Text className="text-2xl font-bold text-slate-900 dark:text-white">SpenseTrack</Text>
                     </View>
                     <TouchableOpacity
                         onPress={() => router.push('/settings')}

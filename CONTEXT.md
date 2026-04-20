@@ -1,4 +1,4 @@
-# Spense — Agent / Developer Context
+# SpenseTrack — Agent / Developer Context
 
 > **Share this file with any AI agent or developer who needs to start working on the project immediately.**
 > It contains everything needed to understand, clone, build, and contribute without asking questions.
@@ -8,11 +8,12 @@
 
 ## 1. What Is This Project?
 
-**Spense** is a privacy-first Android expense tracker built with React Native (Expo). Users log expenses manually, and the app calculates a live "Safe to Spend" daily budget. All data stays on-device — no cloud, no accounts, no network requests.
+**SpenseTrack** is a privacy-first Android expense tracker built with React Native (Expo). Users log expenses manually, and the app calculates a live "Safe to Spend" daily budget. All data stays on-device — no cloud, no accounts, no network requests.
 
 - **GitHub Repo:** `https://github.com/aviral727/spense`
 - **Package ID:** `com.spense.app`
-- **Current Version:** `1.1.0` (versionCode 2)
+- **Current Version:** `1.1.0`
+- **App Name:** SpenseTrack (was "Spense" before v1.1.0) (versionCode 2)
 - **Platform:** Android (primary). iOS scaffolded but not a target.
 - **Play Store Status:** In review for production (v1.1.0 submission clears previous SMS policy rejections)
 - **Design Doc (deep reference):** `Docs/spense_design_doc.md`

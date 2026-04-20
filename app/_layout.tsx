@@ -122,7 +122,7 @@ export default function RootLayout() {
         return (
             <View className="flex-1 items-center justify-center bg-slate-950">
                 <ActivityIndicator size="large" color="#059669" />
-                <Text className="text-slate-400 mt-4">Setting up Spense...</Text>
+                <Text className="text-slate-400 mt-4">Setting up SpenseTrack...</Text>
             </View>
         );
     }

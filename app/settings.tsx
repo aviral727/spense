@@ -238,7 +238,7 @@ export default function Settings() {
                         </TouchableOpacity>
                     </View>
 
-                    <Text className="text-center text-slate-400 dark:text-slate-600 mt-12 mb-4 text-sm">Spense v1.0.0</Text>
+                    <Text className="text-center text-slate-400 dark:text-slate-600 mt-12 mb-4 text-sm">SpenseTrack v1.1.0</Text>
                 </ScrollView>
             </View>
         </SafeAreaView>

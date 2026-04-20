@@ -96,7 +96,7 @@ export default function OnboardingScreen() {
         <View className="flex-1 justify-center px-6">
             <View className="mb-8 items-center">
                 <Text className="text-4xl font-bold text-slate-900 dark:text-white mb-2 text-center">
-                    Welcome to{'\n'}Spense 👋
+                    Welcome to{'\n'}SpenseTrack 👋
                 </Text>
                 <Text className="text-slate-500 dark:text-slate-400 text-center text-lg px-4 mt-2">
                     Your smart, privacy-first budget tracker. No accounts, no cloud — everything stays on your phone.
