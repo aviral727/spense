@@ -69,7 +69,11 @@ export default function AddTransaction() {
                 await checkBudgetAlerts(parseFloat(amount), newTxId); // Pass amount and ID
             }
 
-            router.back();
+            if (router.canGoBack()) {
+                router.back();
+            } else {
+                router.replace('/(tabs)/transactions');
+            }
         } catch (e) {
             console.error('Error saving transaction:', e);
         } finally {
@@ -88,15 +92,12 @@ export default function AddTransaction() {
                 }
                 className="flex-1"
             >
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    className="flex-1 dark:bg-slate-950"
-                >
-                    <ScrollView className="flex-1 px-6 pt-12">
+                <View className="flex-1 dark:bg-slate-950">
+                    <ScrollView className="flex-1 px-6 pt-6 mb-4">
                         {/* Header with Type Switcher */}
                         <View className="flex-row justify-between items-center mb-10">
                             <TouchableOpacity
-                                onPress={() => router.back()}
+                                onPress={() => router.canGoBack() ? router.back() : router.replace('/')}
                                 className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-full items-center justify-center"
                             >
                                 <Text className="text-xl dark:text-white">✕</Text>
@@ -141,7 +142,7 @@ export default function AddTransaction() {
                                     className="text-7xl font-bold text-gray-900 dark:text-white min-w-[20%]"
                                     value={amount}
                                     onChangeText={setAmount}
-                                    autoFocus
+                                    autoFocus={Platform.OS !== 'ios'}
                                     placeholderTextColor="#6b7280"
                                 />
                             </View>
@@ -228,7 +229,7 @@ export default function AddTransaction() {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                </KeyboardAvoidingView>
+                </View>
             </LinearGradient>
 
             <CategoryPicker

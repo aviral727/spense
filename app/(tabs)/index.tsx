@@ -91,28 +91,28 @@ export default function Home() {
                 <View
                     style={{
                         borderRadius: 24,
-                        backgroundColor: theme === 'dark' ? '#0f172a' : 'white',
                         elevation: 10,
                         shadowColor: theme === 'dark' ? '#000' : '#059669',
                         shadowOffset: { width: 0, height: 8 },
                         shadowOpacity: 0.3,
                         shadowRadius: 8,
-                        marginBottom: 32
+                        marginBottom: 32,
                     }}
                 >
-                    <LinearGradient
-                        colors={
-                            budgetStatus?.isOverBudget
-                                ? ['#dc2626', '#ef4444']
-                                : ['#059669', '#10b981', '#34d399']
-                        }
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        className="p-6"
-                        style={{ borderRadius: 24, width: '100%' }}
-                    >
-                        <TouchableOpacity onPress={toggleDisplayMode} activeOpacity={0.7}>
-                            <View className="flex-row items-center mb-2">
+                    <View style={{ borderRadius: 24, overflow: 'hidden' }}>
+                        <LinearGradient
+                            colors={
+                                budgetStatus?.isOverBudget
+                                    ? ['#dc2626', '#ef4444']
+                                    : ['#059669', '#10b981', '#34d399']
+                            }
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            className="mt-2"
+                            style={{ width: '100%', paddingVertical: 28, paddingHorizontal: 24 }}
+                        >
+                            <TouchableOpacity onPress={toggleDisplayMode} activeOpacity={0.7} style={{ marginBottom: 12 }}>
+                                <View className="flex-row items-center flex-wrap">
                                 <Text className="text-emerald-50 font-medium text-sm uppercase tracking-wider">
                                     {getDisplayLabel()}
                                 </Text>
@@ -123,13 +123,18 @@ export default function Home() {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                        <Text className="text-5xl font-bold text-white mb-2">
-                            {currency}{Math.floor(getDisplayAmount()).toLocaleString('en-IN')}
-                        </Text>
-                        <Text className="text-emerald-50 text-sm">
+                            <Text 
+                                style={{ fontSize: 48, fontWeight: 'bold', color: 'white', marginBottom: 8, lineHeight: 56 }} 
+                                adjustsFontSizeToFit 
+                                numberOfLines={1}
+                            >
+                                {currency}{Math.floor(getDisplayAmount()).toLocaleString('en-IN')}
+                            </Text>
+                            <Text style={{ color: '#ecfdf5', fontSize: 14 }}>
                             {getSubLabel()}
                         </Text>
                     </LinearGradient>
+                </View>
                 </View>
 
                 {/* Recent Transactions */}
@@ -163,7 +168,7 @@ export default function Home() {
                         className="w-full h-full items-center justify-center"
                         style={{ borderRadius: 24, width: '100%', height: '100%' }}
                     >
-                        <Text className="text-white text-3xl font-light pb-1">+</Text>
+                        <Text style={{ color: 'white', fontSize: 36, fontWeight: '300', textAlign: 'center', includeFontPadding: false, marginTop: -4 }}>+</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>

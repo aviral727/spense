@@ -60,9 +60,9 @@ export default function CategoryPicker({ visible, onClose, onSelect }: CategoryP
             onRequestClose={onClose}
         >
             <View className="flex-1 justify-end bg-black/50">
-                <View className="bg-white rounded-t-3xl p-6" style={{ maxHeight: '80%' }}>
+                <View className="bg-white dark:bg-slate-900 rounded-t-3xl p-6" style={{ maxHeight: '80%' }}>
                     <View className="flex-row justify-between items-center mb-6">
-                        <Text className="text-2xl font-bold text-gray-900">Select Category</Text>
+                        <Text className="text-2xl font-bold text-gray-900 dark:text-white">Select Category</Text>
                         <TouchableOpacity onPress={onClose}>
                             <Text className="text-gray-500 text-2xl">✕</Text>
                         </TouchableOpacity>
@@ -77,11 +77,11 @@ export default function CategoryPicker({ visible, onClose, onSelect }: CategoryP
                         renderItem={({ item }) => (
                             <TouchableOpacity
                                 onPress={() => handleSelect(item.name, item.icon)}
-                                className="bg-gray-100 px-4 py-3 rounded-2xl active:bg-gray-200"
+                                className="bg-gray-100 dark:bg-slate-800 px-4 py-3 rounded-2xl active:bg-gray-200 dark:active:bg-slate-700"
                                 style={{ flexDirection: 'row', alignItems: 'center', width: '48%' }}
                             >
                                 <Text style={{ fontSize: 24, marginRight: 8 }}>{item.icon}</Text>
-                                <Text className="text-gray-800 font-semibold" numberOfLines={1}>
+                                <Text className="text-gray-800 dark:text-gray-200 font-semibold" numberOfLines={1}>
                                     {item.name}
                                 </Text>
                             </TouchableOpacity>
